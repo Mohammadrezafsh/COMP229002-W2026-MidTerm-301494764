@@ -3,7 +3,7 @@ let BookModel = require('../models/books');
 module.exports.getBook = async function (req, res, next) {
   try {
     // Find one using the id sent in the parameter of the request
-    let book = await BookModel.findOne({ _id: req.params.bookId });
+    let book = await BookModel.findById(req.params.id);
 
     res.json({
       success: true,
@@ -67,11 +67,11 @@ module.exports.update = async function (req, res, next) {
     updatedBook._id = req.params.id;
 
     // Submit the change
-    let result = await BookModel.updateOne({ _id: req.params.id });
+    let result = await BookModel.findByIdAndUpdate(req.params.id, req.body);
     console.log("Result: ", result);
 
     // Handle the result: send a response.
-    if (result.modifiedCount > 0) {
+    if (result) {
       res.status(200);
       res.json(
         {
@@ -93,11 +93,11 @@ module.exports.update = async function (req, res, next) {
 module.exports.remove = async function (req, res, next) {
   try {
     // Delete  using the id sent in the parameter of the request
-    let result = await BookModel.deleteOne({ _id: req.params.id });
+    let result = await BookModel.findByIdAndDelete(req.params.id);
     console.log("Result: ", result);
 
     // Handle the result and send a response
-    if (result.deletedCount > 0) {
+    if (result) {
       res.status(200);
       res.json(
         {

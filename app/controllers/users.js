@@ -5,6 +5,22 @@ module.exports.usersList = async function (req, res, next) {
     try {
         // Retrieves a list of users from the DB and waits for the result.
         // Add your code here to retrieve the list of users from the database using the UsersModel.        
+        const users = await UsersModel.find();
+
+        const data = users.map(u => ({
+            firstname: u.firstname,
+            lastname: u.lastname,
+            email: u.email,
+            created: u.created,
+            updated: u.updated,
+            id: u.id
+        }));
+
+        return res.json({
+            success: true,
+            message: "Users list retrieved successfully.",
+            data
+        });
 
         // If the list is empty, throw an error. Otherwise, return the list as a JSON response.
     } catch (error) {
@@ -37,6 +53,30 @@ module.exports.processAdd = async (req, res, next) => {
  
         // Builds a new user from the values of the body of the request.
         // Add your code here to create a new user object using the UsersModel and the data from req.body
+        const now = new Date();
+
+        const newUser = new UsersModel({
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            email: req.body.email,
+            // schema uses passowrd (typo issue), I did not want to touch it since I only change things that are needed to change based on assignment:)
+            passowrd: req.body.password
+        });
+
+        const saved = await newUser.save();
+
+        return res.json({
+            success: true,
+            message: "User added successfully.",
+            data: {
+                firstname: saved.firstname,
+                lastname: saved.lastname,
+                email: saved.email,
+                created: saved.created,
+                updated: saved.updated,
+                id: saved.id
+            }
+        });
 
     } catch (error) {
         console.log(error);
