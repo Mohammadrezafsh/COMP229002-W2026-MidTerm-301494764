@@ -1,4 +1,8 @@
+// had to use dns to set custom DNS servers to avoid "getaddrinfo ENOTFOUND" error when connecting to MongoDB Atlas
 require('dotenv').config()
+const dns = require('dns');
+dns.setServers(['1.1.1.1', '8.8.8.8']);
+
 const mongoose = require('mongoose');
 
 let username = process.env.DB_USERNAME || '';
